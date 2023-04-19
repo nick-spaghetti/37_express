@@ -68,6 +68,23 @@ app.get('/mode', (req, res, next) => {
     return res.send(result);
 })
 
+app.get('/all', (req, res, next) => {
+    if (!req.query.nums) {
+        throw new ExpressError('you must pass a query key of nums with a comma-separated list of numbers', 400);
+    };
+    let numsAsStrings = req.query.nums.split(',');
+    let nums = convertAndValidateNumsArray(numsAsStrings);
+    if (nums instanceof Error) {
+        throw new ExpressError(nums.msg);
+    };
+    let response = {
+        operation: 'all',
+        mean: findMean(nums),
+        median: findMedian(nums),
+        mode: findMode(nums),
+    };
+    return res.send(response);
+})
 
 // catch-all error route
 
